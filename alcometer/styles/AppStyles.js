@@ -13,33 +13,24 @@ export default StyleSheet.create({
     top: 0,
     height: 500,
   },
-  contents: {
-    alignItems: 'center',
+  h1: {
+    marginTop: 30,
+    marginBottom: 30,
+    fontSize: 50,
+    fontWeight: '800',
+    color: 'white',
   },
   box: {
     alignContent: 'flex-start',
     width: '85%',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
     borderRadius: 5,
   },
-  textInput: {
-    padding: 5,
-    borderWidth: 1,
-    marginBottom: 10
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: "bold"
-  },
-  result: {
-    color: '#fb8500',
-    fontSize: 18,
-    fontWeight: "bold"
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#63d1e7',
-    borderRadius: 5,
-    padding: 10,
+  shadow: {
+    shadowColor: '#171717',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   }
 });

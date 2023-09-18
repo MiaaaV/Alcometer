@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { View, Alert } from 'react-native';
 import NumericInput from 'react-native-numeric-input';
-import { RadioButton } from 'react-native-paper';
-import Styles from '../styles/Styles.js';
+import { MD3LightTheme, Provider, RadioButton, TextInput, Text, Button, Avatar } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import Styles from '../styles/CalcStyles.js';
 
 export default function Alcometer() {
-  const [weight, setWeight] = useState(0);
+
+  const [weight, setWeight] = useState("");
   const [bottles, setBottles] = useState(0);
   const [hours, setHours] = useState(0);
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("male");
   const [result, setResult] = useState(0);
-  const [error, setError] = useState("")
+  const [congrats, setCongrats] = useState("")
+
+  function setColor(result) {
+    if (result <= 0.08) {
+      return 'green';
+    } else if (result <= 0.20) {
+      return '#f3e300';
+    } else {
+      return 'red';
+    }
+  }
 
   const calculate = () => {
     let litres = bottles * 0.33;
@@ -18,12 +30,10 @@ export default function Alcometer() {
     let burn = weight / 10;
     let newGrams = grams - (burn * hours);
 
-    if (weight === 0) {
+    if (!weight || weight === 0) {
       setResult(0);
-      setError("Please insert weight");
+      Alert.alert("Insert weight!");
     } else {
-      setError("");
-
       let newResult = 0;
 
       if (gender === "male") {
@@ -32,51 +42,103 @@ export default function Alcometer() {
         newResult = newGrams / (weight * 0.6);
       }
 
-      setResult(Math.max(0, newResult));
+      const roundedResult = Math.max(0, parseFloat(newResult.toFixed(2)));
+      setResult(roundedResult);
+
+      if (roundedResult === 69) {
+        setCongrats("Nice.")
+      } else {
+        setCongrats("");
+      }
+
     }
   }
 
   return (
-    <View>
-      <Text style={Styles.label}>Weight</Text>
-      <TextInput
-        keyboardType='number-pad'
-        value={weight.toString()}
-        onChangeText={text => setWeight(text)}
-        style={Styles.textInput}
-      />
-
-      <Text style={Styles.label}>Bottles</Text>
-      <NumericInput value={bottles} onChange={value => setBottles(value)} />
-
-      <Text style={Styles.label}>Hours</Text>
-      <NumericInput value={hours} onChange={value => setHours(value)} />
-
+    <Provider theme={MD3LightTheme}>
       <View>
-        <View>
-          <Text>Male</Text>
-          <RadioButton
-            value="male"
-            status={gender === 'male' ? 'checked' : 'unchecked'}
-            onPress={() => setGender('male')}
-          />
+        <TextInput
+          label="Weight (kg)"
+          keyboardType='number-pad'
+          value={weight.toString()}
+          onChangeText={text => setWeight(text)}
+          mode='outlined'
+          style={{ marginBottom: 10 }}
+          right={<TextInput.Icon icon='scale' size={30} />}
+        />
+
+        <View style={Styles.numInput}>
+          <View>
+            <Text style={{ marginBottom: 5 }}>Bottles</Text>
+            <NumericInput
+              type='up-down'
+              value={bottles}
+              onChange={value => setBottles(value)}
+              minValue={0}
+              totalHeight={45}
+              containerStyle={Styles.border}
+              reachMinDecIconStyle={{ color: 'gray' }}
+              borderColor='transparent'
+              iconStyle={{ color: '#fefefe', fontSize: 20 }}
+              upDownButtonsBackgroundColor='#86522191' />
+          </View>
+
+          <View>
+            <Text style={{ marginBottom: 5 }}>Hours</Text>
+            <NumericInput
+              type='plus-minus'
+              value={hours}
+              onChange={value => setHours(value)}
+              minValue={0}
+              totalHeight={45}
+              containerStyle={Styles.border}
+              reachMinDecIconStyle={{ color: 'gray' }}
+              borderColor='transparent'
+              iconStyle={{ color: '#fefefe', fontSize: 20 }}
+              rightButtonBackgroundColor='#86522191'
+              leftButtonBackgroundColor='#86522191' />
+          </View>
         </View>
 
-        <View>
-          <Text>Female</Text>
-          <RadioButton
-            value="female"
-            status={gender === 'female' ? 'checked' : 'unchecked'}
-            onPress={() => setGender('female')}
-          />
+        <View style={{ marginVertical: 10 }}>
+          <View style={Styles.radio}>
+            <Text>Male</Text>
+            <View style={Styles.radioBorder}>
+              <RadioButton
+                value="male"
+                status={gender === 'male' ? 'checked' : 'unchecked'}
+                onPress={() => setGender('male')}
+                color="#613b18c2"
+              />
+            </View>
+          </View>
+
+          <View style={Styles.radio}>
+            <Text>Female</Text>
+            <View style={Styles.radioBorder}>
+              <RadioButton
+                value="female"
+                status={gender === 'female' ? 'checked' : 'unchecked'}
+                onPress={() => setGender('female')}
+                color="#613b18c2"
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={{ marginVertical: 10 }}>
+          <Text style={{ alignSelf: 'center', fontSize: 20, color: 'green' }}>{congrats}</Text>
+          <Text style={[Styles.result, { color: setColor(result) }]}>{result}</Text>
+
+          <LinearGradient
+            colors={['#c7793186', '#a16329b4', '#865221b9']}
+            style={{ borderRadius: 10 }}>
+            <Button onPress={calculate}>
+              <Text style={{ color: 'white', fontWeight: '700' }}>CALCULATE</Text>
+            </Button>
+          </LinearGradient>
         </View>
       </View>
-
-      <Text style={Styles.result}>{result}</Text>
-      <Text>{error}</Text>
-      <TouchableOpacity style={Styles.button} onPress={calculate}>
-        <Text>Calculate</Text>
-      </TouchableOpacity>
-    </View>
+    </Provider >
   );
 }
