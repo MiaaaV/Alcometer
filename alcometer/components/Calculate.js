@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
 import NumericInput from 'react-native-numeric-input';
-import { MD3LightTheme, Provider, RadioButton, TextInput, Text, Button, Avatar } from 'react-native-paper';
+import { Provider, RadioButton, TextInput, Text, Button, useTheme, MD3Colors } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import Styles from '../styles/CalcStyles.js';
 
 export default function Alcometer() {
+  const { colors } = useTheme();
 
   const [weight, setWeight] = useState("");
   const [bottles, setBottles] = useState(0);
@@ -18,7 +19,7 @@ export default function Alcometer() {
     if (result <= 0.08) {
       return 'green';
     } else if (result <= 0.20) {
-      return '#f3e300';
+      return '#e0d100';
     } else {
       return 'red';
     }
@@ -55,7 +56,7 @@ export default function Alcometer() {
   }
 
   return (
-    <Provider theme={MD3LightTheme}>
+    <Provider theme={MD3Colors}>
       <View>
         <TextInput
           label="Weight (kg)"
@@ -63,78 +64,84 @@ export default function Alcometer() {
           value={weight.toString()}
           onChangeText={text => setWeight(text)}
           mode='outlined'
-          style={{ marginBottom: 10 }}
+          outlineColor={colors.lighter}
+          style={[{
+            marginBottom: 10,
+            backgroundColor: colors.background1
+          }]}
           right={<TextInput.Icon icon='scale' size={30} />}
         />
 
         <View style={Styles.numInput}>
           <View>
-            <Text style={{ marginBottom: 5 }}>Bottles</Text>
+            <Text style={[{ marginBottom: 5, color: colors.font }]}>Bottles</Text>
             <NumericInput
               type='up-down'
               value={bottles}
               onChange={value => setBottles(value)}
               minValue={0}
               totalHeight={45}
-              containerStyle={Styles.border}
-              reachMinDecIconStyle={{ color: 'gray' }}
+              containerStyle={[Styles.border, { borderColor: colors.lighter }]}
+              reachMinDecIconStyle={{ color: colors.font2 }}
               borderColor='transparent'
-              iconStyle={{ color: '#fefefe', fontSize: 20 }}
-              upDownButtonsBackgroundColor='#86522191' />
+              iconStyle={{ color: colors.white, fontSize: 20 }}
+              upDownButtonsBackgroundColor={colors.primary} />
           </View>
 
           <View>
-            <Text style={{ marginBottom: 5 }}>Hours</Text>
+            <Text style={[{ marginBottom: 5, color: colors.font }]}>Hours</Text>
             <NumericInput
               type='plus-minus'
               value={hours}
               onChange={value => setHours(value)}
               minValue={0}
               totalHeight={45}
-              containerStyle={Styles.border}
-              reachMinDecIconStyle={{ color: 'gray' }}
+              containerStyle={[Styles.border, { borderColor: colors.lighter }]}
+              reachMinDecIconStyle={{ color: colors.font2 }}
               borderColor='transparent'
-              iconStyle={{ color: '#fefefe', fontSize: 20 }}
-              rightButtonBackgroundColor='#86522191'
-              leftButtonBackgroundColor='#86522191' />
+              iconStyle={{ color: colors.white, fontSize: 20 }}
+              rightButtonBackgroundColor={colors.primary}
+              leftButtonBackgroundColor={colors.primary} />
           </View>
         </View>
 
         <View style={{ marginVertical: 10 }}>
           <View style={Styles.radio}>
-            <Text>Male</Text>
-            <View style={Styles.radioBorder}>
+            <Text style={{ color: colors.font3 }}>Male</Text>
+            <View style={{ borderBottomWidth: 1, borderColor: colors.primary }}>
               <RadioButton
                 value="male"
                 status={gender === 'male' ? 'checked' : 'unchecked'}
                 onPress={() => setGender('male')}
-                color="#613b18c2"
+                color={colors.lighter}
               />
             </View>
           </View>
 
           <View style={Styles.radio}>
-            <Text>Female</Text>
-            <View style={Styles.radioBorder}>
+            <Text style={{ color: colors.font3 }}>Female</Text>
+            <View style={{ borderBottomWidth: 1, borderColor: colors.primary }}>
               <RadioButton
                 value="female"
                 status={gender === 'female' ? 'checked' : 'unchecked'}
                 onPress={() => setGender('female')}
-                color="#613b18c2"
+                color={colors.lighter}
               />
             </View>
           </View>
         </View>
 
         <View style={{ marginVertical: 10 }}>
-          <Text style={{ alignSelf: 'center', fontSize: 20, color: 'green' }}>{congrats}</Text>
+          <Text style={{ alignSelf: 'center', fontSize: 20, color: 'green' }}>
+            {congrats}
+          </Text>
           <Text style={[Styles.result, { color: setColor(result) }]}>{result}</Text>
 
           <LinearGradient
-            colors={['#c7793186', '#a16329b4', '#865221b9']}
+            colors={[colors.gradient1, colors.gradient2, colors.gradient3]}
             style={{ borderRadius: 10 }}>
             <Button onPress={calculate}>
-              <Text style={{ color: 'white', fontWeight: '700' }}>CALCULATE</Text>
+              <Text style={[{ color: colors.font, fontWeight: '700', letterSpacing: 3 }]}>CALCULATE</Text>
             </Button>
           </LinearGradient>
         </View>
