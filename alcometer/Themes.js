@@ -24,7 +24,7 @@ export const darkTheme = {
     font3: '#999',
     white: '#666',
     background1: '#2a2a2a',
-    background2: '#3c3c3c',
+    background2: '#4c4c4c',
     lighter: '#323232',
     gradient1: '#565656',
     gradient2: '#414141',
